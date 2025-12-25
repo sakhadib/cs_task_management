@@ -158,6 +158,12 @@
                     </a>
                 </li>
                 @endif
+                <li>
+                    <a href="{{ route('meeting_logs.index') }}" class="flex items-center p-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-all-300">
+                        <i class="fas fa-calendar-check text-lg w-8"></i>
+                        <span class="ml-3 font-medium whitespace-nowrap">Meeting Logs</span>
+                    </a>
+                </li>
             </ul>
             
             <!-- Sidebar Footer -->

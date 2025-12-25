@@ -6,6 +6,8 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PanelController;
 use App\Http\Controllers\TeamController;
+use App\Http\Controllers\MeetingLogController;
+use App\Http\Controllers\MeetingAttendeeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,3 +56,16 @@ Route::delete('/teams/{team}/users/{user}', [TeamController::class, 'removeUser'
 Route::post('/teams/{team}/users', [TeamController::class, 'addUser'])->name('teams.addUser');
 Route::put('/teams/{team}', [TeamController::class, 'update'])->name('teams.update');
 Route::delete('/teams/{team}', [TeamController::class, 'destroy'])->name('teams.destroy');
+
+// Meeting logs
+Route::get('/meeting-logs', [MeetingLogController::class, 'index'])->name('meeting_logs.index');
+Route::get('/meeting-logs/{log}', [MeetingLogController::class, 'show'])->name('meeting_logs.show');
+Route::post('/meeting-logs', [MeetingLogController::class, 'store'])->name('meeting_logs.store');
+Route::patch('/meeting-logs/{log}/minutes', [MeetingLogController::class, 'updateMinutes'])->name('meeting_logs.update_minutes');
+Route::put('/meeting-logs/{log}', [MeetingLogController::class, 'update'])->name('meeting_logs.update');
+Route::delete('/meeting-logs/{log}', [MeetingLogController::class, 'destroy'])->name('meeting_logs.destroy');
+
+// Meeting attendees
+Route::get('/meeting-logs/{log}/attendees', [MeetingAttendeeController::class, 'index'])->name('meeting_logs.attendees.index');
+Route::post('/meeting-logs/{log}/attendees', [MeetingAttendeeController::class, 'store'])->name('meeting_logs.attendees.store');
+Route::delete('/meeting-logs/{log}/attendees/{attendee}', [MeetingAttendeeController::class, 'destroy'])->name('meeting_logs.attendees.destroy');

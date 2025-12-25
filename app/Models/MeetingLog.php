@@ -16,5 +16,6 @@ class MeetingLog extends Model
         'scheduled_at',
         'duration',
         'meeting_minutes',
+        'panel_id',
     ];
 }
