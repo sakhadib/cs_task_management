@@ -141,6 +141,16 @@
                         <span class="ml-3 font-medium whitespace-nowrap">Panels</span>
                     </a>
                 </li>
+                <!-- Current Panel (quick link to positions) -->
+                @php $currentPanel = \App\Models\Panel::where('is_current', true)->first(); @endphp
+                @if($currentPanel)
+                <li>
+                    <a href="{{ url('panels/'.$currentPanel->id.'/positions') }}" class="flex items-center p-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-all-300">
+                        <i class="fas fa-circle-check text-lg w-8"></i>
+                        <span class="ml-3 font-medium whitespace-nowrap">Current Panel</span>
+                    </a>
+                </li>
+                @endif
             </ul>
             
             <!-- Sidebar Footer -->

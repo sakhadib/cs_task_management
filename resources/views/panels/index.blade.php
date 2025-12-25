@@ -46,7 +46,7 @@
                                             <button type="submit" class="text-green-600 hover:text-green-800 ml-4">Make current</button>
                                         </form>
                                     @else
-                                        <span class="text-gray-400 ml-4">&middot;</span>
+                                        <a href="{{ route('panels.positions', $panel->id) }}" class="ml-4 inline-flex items-center px-2 py-1 text-sm font-medium rounded bg-indigo-600 text-white hover:bg-indigo-700">Edit positions</a>
                                     @endif
                                     <button type="button" data-panel-id="{{ $panel->id }}" data-panel-name="{{ $panel->name }}" onclick="openPanelDeleteModal(this)" class="text-red-600 hover:text-red-800 ml-4">Delete</button>
                                 </td>

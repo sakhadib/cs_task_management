@@ -67,4 +67,32 @@ class PanelController extends Controller
 
         return redirect()->route('panels.index')->with('success', "Panel '{$panel->name}' is now current.");
     }
+
+    // Show positions for a specific panel
+    public function positions(Panel $panel)
+    {
+        // Load positions with user data
+        $positions = \App\Models\Position::with('user')
+            ->where('panel_id', $panel->id)
+            ->orderBy('level')
+            ->get();
+
+        return view('panels.positions', compact('panel', 'positions'));
+    }
+
+    // Store a new position for the given panel
+    public function storePosition(Request $request, Panel $panel)
+    {
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'position' => 'required|string|max:191',
+            'level' => 'required|integer|min:0',
+        ]);
+
+        $validated['panel_id'] = $panel->id;
+
+        \App\Models\Position::create($validated);
+
+        return redirect()->route('panels.positions', $panel->id)->with('success', 'Position added.');
+    }
 }

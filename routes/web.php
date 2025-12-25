@@ -39,3 +39,7 @@ Route::get('/panels/{panel}/edit', [PanelController::class, 'edit'])->name('pane
 Route::put('/panels/{panel}', [PanelController::class, 'update'])->name('panels.update');
 Route::delete('/panels/{panel}', [PanelController::class, 'destroy'])->name('panels.destroy');
 Route::post('/panels/{panel}/make-current', [PanelController::class, 'makeCurrent'])->name('panels.makeCurrent');
+Route::get('/panels/{panel}/positions', [PanelController::class, 'positions'])->name('panels.positions');
+Route::post('/panels/{panel}/positions', [PanelController::class, 'storePosition'])->name('panels.positions.store');
+Route::put('/positions/{position}', [\App\Http\Controllers\PositionController::class, 'update'])->name('positions.update');
+Route::delete('/positions/{position}', [\App\Http\Controllers\PositionController::class, 'destroy'])->name('positions.destroy');
