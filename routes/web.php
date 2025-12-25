@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PanelController;
+use App\Http\Controllers\TeamController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,3 +44,13 @@ Route::get('/panels/{panel}/positions', [PanelController::class, 'positions'])->
 Route::post('/panels/{panel}/positions', [PanelController::class, 'storePosition'])->name('panels.positions.store');
 Route::put('/positions/{position}', [\App\Http\Controllers\PositionController::class, 'update'])->name('positions.update');
 Route::delete('/positions/{position}', [\App\Http\Controllers\PositionController::class, 'destroy'])->name('positions.destroy');
+
+// Teams (only index needed for current panel view)
+Route::get('/teams', [TeamController::class, 'index'])->name('teams.index');
+Route::post('/teams', [TeamController::class, 'store'])->name('teams.store');
+Route::get('/teams/{team}', [TeamController::class, 'show'])->name('teams.show');
+Route::post('/teams/{team}/users/{user}/make-lead', [TeamController::class, 'makeLead'])->name('teams.makeLead');
+Route::delete('/teams/{team}/users/{user}', [TeamController::class, 'removeUser'])->name('teams.removeUser');
+Route::post('/teams/{team}/users', [TeamController::class, 'addUser'])->name('teams.addUser');
+Route::put('/teams/{team}', [TeamController::class, 'update'])->name('teams.update');
+Route::delete('/teams/{team}', [TeamController::class, 'destroy'])->name('teams.destroy');

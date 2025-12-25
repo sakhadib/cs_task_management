@@ -15,7 +15,10 @@ class UserController extends Controller
 
         $query = User::query();
         if ($search) {
-            $query->where('name', 'like', "%{$search}%");
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('student_id', 'like', "%{$search}%");
+            });
         }
 
         $users = $query->orderBy('name')->get();
