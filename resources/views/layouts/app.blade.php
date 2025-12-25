@@ -119,70 +119,26 @@
                         <span class="ml-3 font-medium whitespace-nowrap">Dashboard</span>
                     </a>
                 </li>
-                
-                <!-- Separator -->
+
+                <!-- Main Menu (kept for structure) -->
                 <li class="pt-4">
                     <div class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                         Main Menu
                     </div>
                 </li>
-                
-                <!-- Additional menu items (inactive/placeholder) -->
-                <li>
-                    <a href="#" class="flex items-center p-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-all-300">
-                        <i class="fas fa-users text-lg w-8"></i>
-                        <span class="ml-3 font-medium whitespace-nowrap">Members</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="flex items-center p-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-all-300">
-                        <i class="fas fa-project-diagram text-lg w-8"></i>
-                        <span class="ml-3 font-medium whitespace-nowrap">Projects</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="flex items-center p-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-all-300">
-                        <i class="fas fa-calendar-alt text-lg w-8"></i>
-                        <span class="ml-3 font-medium whitespace-nowrap">Events</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="flex items-center p-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-all-300">
-                        <i class="fas fa-cog text-lg w-8"></i>
-                        <span class="ml-3 font-medium whitespace-nowrap">Settings</span>
-                    </a>
-                </li>
-                
-                <!-- Separator -->
-                <li class="pt-4">
-                    <div class="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                        Tools
-                    </div>
-                </li>
-                
-                <!-- Tool items -->
-                <li>
-                    <a href="#" class="flex items-center p-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-all-300">
-                        <i class="fas fa-code text-lg w-8"></i>
-                        <span class="ml-3 font-medium whitespace-nowrap">Code Editor</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="flex items-center p-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-all-300">
-                        <i class="fas fa-server text-lg w-8"></i>
-                        <span class="ml-3 font-medium whitespace-nowrap">Server Status</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#" class="flex items-center p-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-all-300">
-                        <i class="fas fa-database text-lg w-8"></i>
-                        <span class="ml-3 font-medium whitespace-nowrap">Database</span>
-                    </a>
-                </li>
+
+                <!-- Users -->
                 <li>
                     <a href="{{ route('users.index') }}" class="flex items-center p-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-all-300">
                         <i class="fas fa-users text-lg w-8"></i>
                         <span class="ml-3 font-medium whitespace-nowrap">Users</span>
+                    </a>
+                </li>
+                <!-- Panels -->
+                <li>
+                    <a href="{{ route('panels.index') }}" class="flex items-center p-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-all-300">
+                        <i class="fas fa-th-large text-lg w-8"></i>
+                        <span class="ml-3 font-medium whitespace-nowrap">Panels</span>
                     </a>
                 </li>
             </ul>

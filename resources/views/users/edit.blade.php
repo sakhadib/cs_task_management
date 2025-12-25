@@ -8,10 +8,10 @@
         <div class="mb-8 flex items-center justify-between">
             <div>
                 <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">
-                    Create New User
+                    Edit User
                 </h1>
                 <p class="mt-2 text-sm text-gray-600">
-                    Add a new team member to your dashboard.
+                    Update user details.
                 </p>
             </div>
             <a href="{{ route('users.index') }}" class="text-indigo-600 hover:text-indigo-900 font-medium flex items-center transition-colors duration-200">
@@ -45,8 +45,9 @@
 
         {{-- Main Form Card --}}
         <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-            <form action="{{ route('users.store') }}" method="POST">
+            <form action="{{ route('users.update', $user->id) }}" method="POST">
                 @csrf
+                @method('PUT')
                 
                 <div class="px-6 py-8 space-y-6">
                     {{-- Name Field --}}
@@ -57,7 +58,7 @@
                         <div class="mt-1">
                             <input type="text" name="name" id="name" 
                                 class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-shadow duration-200" 
-                                value="{{ old('name') }}" 
+                                value="{{ old('name', $user->name) }}" 
                                 placeholder="e.g. Adib Sakhawat">
                         </div>
                     </div>
@@ -70,42 +71,37 @@
                         <div class="mt-1">
                             <input type="email" name="email" id="email" 
                                 class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-shadow duration-200" 
-                                value="{{ old('email') }}"
+                                value="{{ old('email', $user->email) }}"
                                 placeholder="name@example.com">
                         </div>
                     </div>
 
-                                    {{-- Student ID Field --}}
-                                    <div>
-                                        <label for="student_id" class="block text-sm font-medium text-gray-700">
-                                            Student ID
-                                        </label>
-                                        <div class="mt-1">
-                                            <input type="text" name="student_id" id="student_id"
-                                                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-shadow duration-200"
-                                                value="{{ old('student_id') }}" placeholder="e.g. 20251234">
-                                        </div>
-                                    </div>
+                    {{-- Student ID Field --}}
+                    <div>
+                        <label for="student_id" class="block text-sm font-medium text-gray-700">
+                            Student ID
+                        </label>
+                        <div class="mt-1">
+                            <input type="text" name="student_id" id="student_id"
+                                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-shadow duration-200"
+                                value="{{ old('student_id', $user->student_id) }}" placeholder="e.g. 20251234">
+                        </div>
+                    </div>
 
-                                    {{-- Role Field --}}
-                                    <div>
-                                        <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
-                                        <div class="mt-1">
-                                            <select id="role" name="role" required
-                                                class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-lg">
-                                                <option value="">Select role</option>
-                                                <option value="admin" {{ old('role')=='admin' ? 'selected' : '' }}>Admin</option>
-                                                <option value="advisor" {{ old('role')=='advisor' ? 'selected' : '' }}>Advisor</option>
-                                                <option value="allumni" {{ old('role')=='allumni' ? 'selected' : '' }}>Allumni</option>
-                                                <option value="member" {{ old('role')=='member' ? 'selected' : '' }}>Member</option>
-                                                <option value="guest" {{ old('role')=='guest' ? 'selected' : '' }}>Guest</option>
-                                            </select>
-                                        </div>
-                                    </div>
-
-                    {{-- Password is set to a default value ("password") on user creation --}}
-                    <div class="rounded-md bg-yellow-50 border-l-4 border-yellow-400 p-4">
-                        <p class="text-sm text-yellow-700">A default password <strong>password</strong> will be assigned to the new user. They should change it after first login.</p>
+                    {{-- Role Field --}}
+                    <div>
+                        <label for="role" class="block text-sm font-medium text-gray-700">Role</label>
+                        <div class="mt-1">
+                            <select id="role" name="role" required
+                                class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-lg">
+                                <option value="">Select role</option>
+                                <option value="admin" {{ old('role', $user->role)=='admin' ? 'selected' : '' }}>Admin</option>
+                                <option value="advisor" {{ old('role', $user->role)=='advisor' ? 'selected' : '' }}>Advisor</option>
+                                <option value="allumni" {{ old('role', $user->role)=='allumni' ? 'selected' : '' }}>Allumni</option>
+                                <option value="member" {{ old('role', $user->role)=='member' ? 'selected' : '' }}>Member</option>
+                                <option value="guest" {{ old('role', $user->role)=='guest' ? 'selected' : '' }}>Guest</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
@@ -115,7 +111,7 @@
                         Cancel
                     </a>
                     <button type="submit" class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 shadow-sm transition-all duration-200">
-                        Create User
+                        Update User
                     </button>
                 </div>
 
