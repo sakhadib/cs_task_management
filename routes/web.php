@@ -93,3 +93,9 @@ Route::delete('/meeting-logs/{log}', [MeetingLogController::class, 'destroy'])->
 Route::get('/meeting-logs/{log}/attendees', [MeetingAttendeeController::class, 'index'])->name('meeting_logs.attendees.index')->middleware('auth')->middleware('password.changed');
 Route::post('/meeting-logs/{log}/attendees', [MeetingAttendeeController::class, 'store'])->name('meeting_logs.attendees.store')->middleware('auth')->middleware('password.changed');
 Route::delete('/meeting-logs/{log}/attendees/{attendee}', [MeetingAttendeeController::class, 'destroy'])->name('meeting_logs.attendees.destroy')->middleware('auth')->middleware('password.changed');
+
+
+
+Route::get('/test', function () {
+    return ('Test route works!');
+});
