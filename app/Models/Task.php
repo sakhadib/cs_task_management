@@ -16,6 +16,7 @@ class Task extends Model
         'team_id',
         'user_id',
         'created_by',
+        'panel_id',
     ];
 
     public function team()
@@ -31,6 +32,11 @@ class Task extends Model
     public function creator()
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function panel()
+    {
+        return $this->belongsTo(Panel::class);
     }
 
     public function histories()

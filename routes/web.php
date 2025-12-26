@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PanelController;
+use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\MeetingLogController;
 use App\Http\Controllers\MeetingAttendeeController;
@@ -56,6 +57,12 @@ Route::delete('/teams/{team}/users/{user}', [TeamController::class, 'removeUser'
 Route::post('/teams/{team}/users', [TeamController::class, 'addUser'])->name('teams.addUser');
 Route::put('/teams/{team}', [TeamController::class, 'update'])->name('teams.update');
 Route::delete('/teams/{team}', [TeamController::class, 'destroy'])->name('teams.destroy');
+
+// Tasks
+Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index')->middleware('auth');
+Route::get('/tasks/create', [TaskController::class, 'create'])->name('tasks.create')->middleware('auth');
+Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store')->middleware('auth');
+Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy')->middleware('auth');
 
 // Meeting logs
 Route::get('/meeting-logs', [MeetingLogController::class, 'index'])->name('meeting_logs.index');
