@@ -5,6 +5,8 @@ namespace App\Observers;
 use App\Models\Task;
 use App\Models\TaskHistory;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\TaskAssigned;
 
 class TaskObserver
 {
@@ -33,6 +35,23 @@ class TaskObserver
         unset($changes['updated_at']);
         if (empty($changes)) {
             return;
+        }
+
+        // Check if user_id was changed (task assigned to a user)
+        if (isset($changes['user_id']) && $task->user_id) {
+            $oldUserId = $task->getOriginal('user_id');
+            $newUserId = $task->user_id;
+            
+            // Only send email if user_id actually changed (not just set to same value)
+            // and if there's a valid user assigned
+            if ($oldUserId !== $newUserId && $task->user) {
+                try {
+                    Mail::to($task->user->email)->send(new TaskAssigned($task));
+                } catch (\Exception $e) {
+                    // Log error but don't break the update process
+                    \Log::error('Failed to send task assignment email: ' . $e->getMessage());
+                }
+            }
         }
 
         $diff = [];

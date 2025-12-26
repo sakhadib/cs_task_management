@@ -114,7 +114,7 @@
             <ul class="space-y-1 px-2">
                 <!-- Dashboard Menu Item -->
                 <li>
-                    <a href="#" class="sidebar-link flex items-center p-3 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-all-300 active">
+                    <a href="{{ route('dashboard') }}" class="sidebar-link flex items-center p-3 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg transition-all-300 active">
                         <i class="fas fa-tachometer-alt text-lg w-8"></i>
                         <span class="ml-3 font-medium whitespace-nowrap">Dashboard</span>
                     </a>
@@ -150,6 +150,15 @@
                         <span class="ml-3 font-medium whitespace-nowrap">Tasks</span>
                     </a>
                 </li>
+                <!-- Team Workspace (visible to any user who belongs to a team) -->
+                @if(auth()->check() && \App\Models\TeamUser::where('user_id', auth()->id())->exists())
+                <li>
+                    <a href="{{ route('team_workspace.index') }}" class="flex items-center p-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-all-300">
+                        <i class="fas fa-briefcase text-lg w-8"></i>
+                        <span class="ml-3 font-medium whitespace-nowrap">Team Workspace</span>
+                    </a>
+                </li>
+                @endif
                 @if(auth()->check() && auth()->user()->role !== 'member')
                 <!-- Panels -->
                 <li>
@@ -183,15 +192,18 @@
             <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-800">
                 <div class="flex items-center">
                     <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
-                        <span class="text-white font-bold text-sm">AD</span>
+                        <span class="text-white font-bold text-sm">{{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 2)) }}</span>
                     </div>
                     <div class="ml-3 overflow-hidden">
-                        <p class="text-white text-sm font-medium truncate">Admin User</p>
-                        <p class="text-gray-400 text-xs truncate">admin@iutcs.org</p>
+                        <p class="text-white text-sm font-medium truncate">{{ auth()->user()->name ?? 'User' }}</p>
+                        <p class="text-gray-400 text-xs truncate">{{ auth()->user()->email ?? '' }}</p>
                     </div>
-                    <a href="#" class="ml-auto text-gray-400 hover:text-white">
-                        <i class="fas fa-sign-out-alt"></i>
-                    </a>
+                    <form method="POST" action="{{ route('logout') }}" class="ml-auto">
+                        @csrf
+                        <button type="submit" class="text-gray-400 hover:text-white transition-colors" title="Logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

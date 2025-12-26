@@ -1,241 +1,334 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen bg-gray-50 py-10">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        {{-- Header Section --}}
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
-            <div>
-                <div class="flex items-center space-x-2 text-sm text-gray-500 mb-1">
-                    <a href="{{ route('tasks.index') }}" class="hover:text-indigo-600 transition-colors">Tasks</a>
-                    <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                    <span>Task #{{ $task->id }}</span>
-                </div>
-                <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">
-                    {{ $task->title }}
-                </h1>
-            </div>
-            <div class="mt-4 md:mt-0 flex flex-wrap items-center gap-2 w-full">
-                <a href="{{ route('tasks.index') }}" class="w-full sm:w-auto inline-flex items-center justify-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all">
-                    Back to List
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header Section -->
+        <div class="mb-8 animate-fade-in">
+            <div class="flex items-center gap-3 mb-2">
+                <a href="{{ route('tasks.index') }}" class="inline-flex items-center text-gray-600 hover:text-gray-900 transition-colors">
+                    <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    Back to Tasks
                 </a>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900">
+                {{ $task->title }}
+            </h1>
+            <p class="mt-2 text-gray-500 text-sm">Task #{{ $task->id }}</p>
+        </div>
 
-                <form method="POST" action="{{ route('tasks.changeState', $task->id) }}" class="w-full sm:w-auto">
-                    @csrf
-                    <input type="hidden" name="state" value="working">
-                    <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center px-3 py-2 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-all">
-                        Mark Working
-                    </button>
-                </form>
+        {{-- Success Message --}}
+        @if(session('success'))
+            <div class="mb-6 rounded-xl bg-gradient-to-r from-green-50 to-emerald-50 p-4 border-l-4 border-green-500 shadow-lg animate-fade-in">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <svg class="h-6 w-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-semibold text-green-800">{{ session('success') }}</p>
+                    </div>
+                </div>
+            </div>
+        @endif
 
-                <form method="POST" action="{{ route('tasks.changeState', $task->id) }}" class="w-full sm:w-auto">
-                    @csrf
-                    <input type="hidden" name="state" value="submitted to review">
-                    <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center px-3 py-2 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all">
-                        Submit to Review
-                    </button>
-                </form>
+        <!-- Task Information Section -->
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100 mb-8">
+            <div class="px-6 py-5 bg-gray-800">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div class="ml-4">
+                        <h2 class="text-xl font-bold text-white">Task Details</h2>
+                        <p class="text-gray-300 text-sm">Complete information about this task</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                    <!-- State -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Status</label>
+                        @php
+                            $stateColors = [
+                                'pending assignment' => 'bg-gray-100 text-gray-700 border-gray-300',
+                                'team assigned' => 'bg-gray-200 text-gray-800 border-gray-300',
+                                'assigned to user' => 'bg-gray-200 text-gray-800 border-gray-400',
+                                'reassigned to user' => 'bg-gray-200 text-gray-800 border-gray-400',
+                                'working' => 'bg-gray-700 text-white border-gray-700',
+                                'submitted to review' => 'bg-gray-300 text-gray-900 border-gray-400',
+                                'completed' => 'bg-gray-900 text-white border-gray-900',
+                            ];
+                            $stateLabels = [
+                                'pending assignment' => 'Pending',
+                                'team assigned' => 'Team',
+                                'assigned to user' => 'Assigned',
+                                'reassigned to user' => 'Reassigned',
+                                'working' => 'In Progress',
+                                'submitted to review' => 'Review',
+                                'completed' => 'Done',
+                            ];
+                            $stateColor = $stateColors[$task->state] ?? 'bg-gray-100 text-gray-800 border-gray-200';
+                            $stateLabel = $stateLabels[$task->state] ?? ucfirst($task->state);
+                        @endphp
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border-2 {{ $stateColor }}">
+                            {{ $stateLabel }}
+                        </span>
+                    </div>
 
-                <form method="POST" action="{{ route('tasks.changeState', $task->id) }}" class="w-full sm:w-auto">
-                    @csrf
-                    <input type="hidden" name="state" value="completed">
-                    <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center px-3 py-2 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all">
-                        Mark Completed
-                    </button>
-                </form>
+                    <!-- Assignee -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Assignee</label>
+                        <div class="flex items-center">
+                            <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 font-bold text-xs mr-2">
+                                {{ substr($task->user->name ?? ($task->creator->name ?? '?'), 0, 1) }}
+                            </div>
+                            <span class="text-sm font-medium text-gray-900">
+                                {{ $task->user->name ?? ($task->creator->name ?? 'Unassigned') }}
+                            </span>
+                        </div>
+                    </div>
 
-                <div class="w-full sm:w-auto">
-                    <button type="button" onclick="openAssignModal()" class="w-full sm:w-auto inline-flex items-center justify-center px-3 py-2 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
+                    <!-- Team -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Team</label>
+                        <p class="text-sm text-gray-900 font-medium">{{ $task->team->name ?? 'No Team' }}</p>
+                    </div>
+
+                    <!-- Panel -->
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Panel</label>
+                        <p class="text-sm text-gray-900 font-medium">{{ $task->panel->name ?? 'No Panel' }}</p>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="border-t border-gray-200 pt-6">
+                    <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Description</label>
+                    <div class="text-sm text-gray-700 leading-relaxed bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        {{ $task->description ?? 'No description provided.' }}
+                    </div>
+                </div>
+
+                <!-- Metadata -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 pt-6 border-t border-gray-200">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Created By</label>
+                        <p class="text-sm text-gray-900 font-medium">{{ $task->creator->name ?? 'Unknown' }}</p>
+                        <p class="text-xs text-gray-500 mt-1">{{ optional($task->created_at)->format('F j, Y \a\t g:i A') }}</p>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Last Updated</label>
+                        <p class="text-xs text-gray-500">{{ optional($task->updated_at)->format('F j, Y \a\t g:i A') ?? 'Never' }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="bg-gray-50 px-6 py-4 border-t border-gray-200 flex flex-wrap items-center gap-3">
+                @if(auth()->check() && auth()->user()->role === 'member')
+                    @if(optional($task->user)->id === auth()->id())
+                        <form method="POST" action="{{ route('tasks.changeState', $task->id) }}" class="inline">
+                            @csrf
+                            <input type="hidden" name="state" value="working">
+                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all duration-200 font-semibold text-sm">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                Start Working
+                            </button>
+                        </form>
+
+                        <form method="POST" action="{{ route('tasks.changeState', $task->id) }}" class="inline">
+                            @csrf
+                            <input type="hidden" name="state" value="submitted to review">
+                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition-all duration-200 font-semibold text-sm">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                Submit for Review
+                            </button>
+                        </form>
+                    @endif
+                @else
+                    <form method="POST" action="{{ route('tasks.changeState', $task->id) }}" class="inline">
+                        @csrf
+                        <input type="hidden" name="state" value="working">
+                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all duration-200 font-semibold text-sm">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Start Working
+                        </button>
+                    </form>
+
+                    <form method="POST" action="{{ route('tasks.changeState', $task->id) }}" class="inline">
+                        @csrf
+                        <input type="hidden" name="state" value="submitted to review">
+                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-800 transition-all duration-200 font-semibold text-sm">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            Submit for Review
+                        </button>
+                    </form>
+
+                    <form method="POST" action="{{ route('tasks.changeState', $task->id) }}" class="inline">
+                        @csrf
+                        <input type="hidden" name="state" value="completed">
+                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-black transition-all duration-200 font-semibold text-sm">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Mark Complete
+                        </button>
+                    </form>
+
+                    <button type="button" onclick="openAssignModal()" class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-all duration-200 font-semibold text-sm">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                        </svg>
                         Assign User
                     </button>
-                </div>
+                @endif
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            {{-- Left Column: Task Info Card --}}
-            <div class="lg:col-span-1 space-y-6">
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden sticky top-6">
-                    <div class="px-6 py-5 border-b border-gray-100 bg-gray-50/50">
-                        <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wide">Task Information</h3>
+        <!-- Activity Timeline Section -->
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+            <div class="px-6 py-5 bg-gray-800">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
                     </div>
-                    <div class="p-6 space-y-6">
-                        
-                        {{-- State Badge --}}
-                        <div>
-                            <span class="text-xs font-medium text-gray-500 uppercase tracking-wider block mb-1">State</span>
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 capitalize">
-                                {{ $task->state }}
-                            </span>
-                        </div>
-
-                        {{-- Assignee --}}
-                        <div>
-                            <span class="text-xs font-medium text-gray-500 uppercase tracking-wider block mb-1">Assignee</span>
-                            <div class="flex items-center">
-                                <div class="h-8 w-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-700 font-bold text-xs mr-3">
-                                    {{ substr($task->user->name ?? ($task->creator->name ?? '?'), 0, 1) }}
-                                </div>
-                                <div class="text-sm font-medium text-gray-900">
-                                    {{ $task->user->name ?? ($task->creator->name ?? 'Unassigned') }}
-                                </div>
-                            </div>
-                        </div>
-
-                        {{-- Metadata Grid --}}
-                        <div class="grid grid-cols-1 gap-4">
-                            <div>
-                                <span class="text-xs font-medium text-gray-500 uppercase tracking-wider block mb-1">Team</span>
-                                <p class="text-sm text-gray-900 font-medium">{{ $task->team->name ?? 'No Team' }}</p>
-                            </div>
-                            <div>
-                                <span class="text-xs font-medium text-gray-500 uppercase tracking-wider block mb-1">Panel</span>
-                                <p class="text-sm text-gray-900 font-medium">{{ $task->panel->name ?? 'No Panel' }}</p>
-                            </div>
-                            <div>
-                                <span class="text-xs font-medium text-gray-500 uppercase tracking-wider block mb-1">Created By</span>
-                                <p class="text-sm text-gray-900">{{ $task->creator->name ?? 'Unknown' }}</p>
-                                <p class="text-xs text-gray-400">{{ optional($task->created_at)->format('M j, Y g:i a') }}</p>
-                            </div>
-                        </div>
-
-                        <div class="border-t border-gray-100 pt-4">
-                            <span class="text-xs font-medium text-gray-500 uppercase tracking-wider block mb-2">Description</span>
-                            <div class="text-sm text-gray-600 leading-relaxed bg-gray-50 p-3 rounded-lg border border-gray-100">
-                                {{ $task->description ?? 'No description provided.' }}
-                            </div>
-                        </div>
-
+                    <div class="ml-4">
+                        <h2 class="text-xl font-bold text-white">Activity History</h2>
+                        <p class="text-gray-300 text-sm">Complete timeline of all changes and updates</p>
                     </div>
                 </div>
             </div>
 
-            {{-- Right Column: Activity Timeline --}}
-            <div class="lg:col-span-2">
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                    <h3 class="text-lg font-bold text-gray-900 mb-6 flex items-center">
-                        <svg class="w-5 h-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        Activity History
-                    </h3>
+            <div class="p-6">
 
-                    @if($histories->isEmpty())
-                        <div class="text-center py-12">
-                            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-100 mb-3">
-                                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            </div>
-                            <p class="text-gray-500 text-sm">No activity recorded for this task yet.</p>
+                @if($histories->isEmpty())
+                    <div class="text-center py-16">
+                        <div class="inline-block bg-gray-100 rounded-full p-8 mb-4">
+                            <svg class="w-16 h-16 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
                         </div>
-                    @else
-                        {{-- PHP Helper Definition (Kept as is, just wrapped cleanly) --}}
-                        @php
-                            if (! function_exists('renderFieldValue')) {
-                                function renderFieldValue($field, $val) {
-                                    if ($val === null || $val === '') return 'NULL';
-                                    if (in_array($field, ['user_id', 'created_by', 'updated_by'])) {
-                                        $u = \App\Models\User::find($val);
-                                        return $u ? $u->name : $val;
-                                    }
-                                    if ($field === 'team_id') {
-                                        $t = \App\Models\Team::find($val);
-                                        return $t ? $t->name : $val;
-                                    }
-                                    if ($field === 'panel_id') {
-                                        $p = \App\Models\Panel::find($val);
-                                        return $p ? $p->name : $val;
-                                    }
-                                    if (is_array($val)) return json_encode($val);
-                                    return (string) $val;
+                        <p class="text-gray-500 text-lg font-medium">No activity yet</p>
+                        <p class="text-gray-400 text-sm mt-2">Changes to this task will appear here</p>
+                    </div>
+                @else
+                    @php
+                        if (! function_exists('renderFieldValue')) {
+                            function renderFieldValue($field, $val) {
+                                if ($val === null || $val === '') return 'NULL';
+                                if (in_array($field, ['user_id', 'created_by', 'updated_by'])) {
+                                    $u = \App\Models\User::find($val);
+                                    return $u ? $u->name : $val;
                                 }
+                                if ($field === 'team_id') {
+                                    $t = \App\Models\Team::find($val);
+                                    return $t ? $t->name : $val;
+                                }
+                                if ($field === 'panel_id') {
+                                    $p = \App\Models\Panel::find($val);
+                                    return $p ? $p->name : $val;
+                                }
+                                if (is_array($val)) return json_encode($val);
+                                return (string) $val;
                             }
-                        @endphp
+                        }
+                    @endphp
 
-                        <ol class="relative border-l border-gray-200 ml-3 space-y-8">
-                            @foreach($histories as $h)
-                                <li class="ml-6 group">
-                                    {{-- Timeline Dot --}}
-                                    <span class="absolute flex items-center justify-center w-8 h-8 bg-indigo-50 rounded-full -left-4 ring-4 ring-white border border-indigo-100">
-                                        <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                                    </span>
-                                    
-                                    {{-- Timeline Header --}}
-                                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
-                                        <div>
-                                            <h4 class="text-base font-semibold text-gray-900 capitalize">
-                                                {{ $h->action }}
-                                                <span class="font-normal text-gray-500 text-sm">by {{ $h->user->name ?? 'System' }}</span>
-                                            </h4>
-                                            <time class="block mb-2 text-xs font-normal text-gray-400">
-                                                {{ optional($h->created_at)->format('M j, Y • g:i a') }}
-                                            </time>
-                                        </div>
-                                    </div>
+                    <div class="relative border-l-2 border-gray-200 ml-4 space-y-8">
+                        @foreach($histories as $h)
+                            <div class="ml-8 pb-8 border-b border-gray-100 last:border-0 last:pb-0">
+                                <!-- Timeline Dot -->
+                                <span class="absolute flex items-center justify-center w-10 h-10 bg-gray-200 rounded-full -left-5 ring-4 ring-white">
+                                    <svg class="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                                    </svg>
+                                </span>
+                                
+                                <!-- Timeline Header -->
+                                <div class="mb-3">
+                                    <h4 class="text-base font-bold text-gray-900 capitalize">
+                                        {{ $h->action }}
+                                    </h4>
+                                    <p class="text-sm text-gray-600 mt-1">
+                                        by {{ $h->user->name ?? 'System' }} • 
+                                        <time class="text-gray-500">{{ optional($h->created_at)->format('F j, Y \a\t g:i A') }}</time>
+                                    </p>
+                                </div>
 
-                                    {{-- Collapsible Details Section --}}
-                                    <div x-data="{ open: false }" class="bg-white border border-gray-200 rounded-lg overflow-hidden shadow-sm transition-shadow hover:shadow-md">
-                                        {{-- Toggle Header --}}
-                                        <button @click="open = !open" type="button" class="w-full px-4 py-2 bg-gray-50 flex items-center justify-between text-xs font-medium text-gray-600 hover:bg-gray-100 transition-colors">
-                                            <span>Change Details</span>
-                                            <svg :class="{'rotate-180': open}" class="w-4 h-4 transform transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                                        </button>
+                                <!-- Change Details -->
+                                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                                    @php
+                                        $details = [];
+                                        try { 
+                                            $details = $h->details ? json_decode($h->details, true) : []; 
+                                        } catch (\Throwable $e) { 
+                                            $details = ['raw' => $h->details]; 
+                                        }
+                                    @endphp
 
-                                        {{-- Content --}}
-                                        <div x-show="open" x-collapse style="display: none;">
-                                            <div class="p-4">
+                                    @if(isset($details['changes']) && is_array($details['changes']))
+                                        <div class="space-y-3">
+                                            @foreach($details['changes'] as $field => $vals)
                                                 @php
-                                                    $details = [];
-                                                    try { $details = $h->details ? json_decode($h->details, true) : []; } catch (\Throwable $e) { $details = ['raw' => $h->details]; }
+                                                    $label = ucwords(str_replace('_', ' ', preg_replace('/_id$/', '', $field)));
                                                 @endphp
-
-                                                @if(isset($details['changes']) && is_array($details['changes']))
-                                                    <div class="grid grid-cols-1 gap-3">
-                                                        @foreach($details['changes'] as $field => $vals)
-                                                            @php
-                                                                $label = ucwords(str_replace('_', ' ', preg_replace('/_id$/', '', $field)));
-                                                            @endphp
-                                                            <div class="flex flex-col sm:flex-row sm:items-center text-sm border-b border-gray-50 last:border-0 pb-2 last:pb-0">
-                                                                <div class="w-32 font-medium text-gray-500 text-xs uppercase tracking-wide mb-1 sm:mb-0">{{ $label }}</div>
-                                                                <div class="flex-1 flex items-center space-x-3">
-                                                                    <div class="px-2 py-1 bg-red-50 text-red-700 rounded text-xs line-through decoration-red-400 decoration-1 break-all">
-                                                                        {{ renderFieldValue($field, $vals['old'] ?? null) }}
-                                                                    </div>
-                                                                    <svg class="w-4 h-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                                                                    <div class="px-2 py-1 bg-green-50 text-green-700 rounded text-xs font-semibold break-all">
-                                                                        {{ renderFieldValue($field, $vals['new'] ?? null) }}
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        @endforeach
+                                                <div class="flex flex-col sm:flex-row sm:items-start text-sm">
+                                                    <div class="w-40 font-bold text-gray-700 text-xs uppercase tracking-wide mb-2 sm:mb-0 flex-shrink-0">{{ $label }}</div>
+                                                    <div class="flex-1 flex flex-col sm:flex-row sm:items-center gap-2">
+                                                        <div class="px-3 py-1.5 bg-gray-200 text-gray-700 rounded text-xs line-through">
+                                                            {{ renderFieldValue($field, $vals['old'] ?? null) }}
+                                                        </div>
+                                                        <svg class="w-4 h-4 text-gray-400 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                                        </svg>
+                                                        <div class="px-3 py-1.5 bg-gray-900 text-white rounded text-xs font-bold">
+                                                            {{ renderFieldValue($field, $vals['new'] ?? null) }}
+                                                        </div>
                                                     </div>
-                                                @elseif(isset($details['attributes']) && is_array($details['attributes']))
-                                                    <div class="space-y-2">
-                                                        @foreach($details['attributes'] as $k => $v)
-                                                             <div class="flex justify-between text-sm border-b border-gray-50 pb-1">
-                                                                <span class="text-gray-500 font-medium">{{ ucwords(str_replace('_', ' ', $k)) }}</span>
-                                                                <span class="text-gray-800">{{ renderFieldValue($k, $v) }}</span>
-                                                             </div>
-                                                        @endforeach
-                                                    </div>
-                                                @else
-                                                    <pre class="whitespace-pre-wrap text-xs text-gray-600 bg-gray-50 p-3 rounded border border-gray-100 font-mono">{{ json_encode($details, JSON_PRETTY_PRINT) }}</pre>
-                                                @endif
-                                            </div>
+                                                </div>
+                                            @endforeach
                                         </div>
-                                    </div>
-                                </li>
-                            @endforeach
-                        </ol>
-                    @endif
-                </div>
+                                    @elseif(isset($details['attributes']) && is_array($details['attributes']))
+                                        <div class="space-y-2">
+                                            @foreach($details['attributes'] as $k => $v)
+                                                <div class="flex justify-between text-sm py-1">
+                                                    <span class="text-gray-600 font-semibold">{{ ucwords(str_replace('_', ' ', $k)) }}</span>
+                                                    <span class="text-gray-900 font-medium">{{ renderFieldValue($k, $v) }}</span>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @else
+                                        <pre class="whitespace-pre-wrap text-xs text-gray-700 bg-white p-3 rounded border border-gray-300 font-mono">{{ json_encode($details, JSON_PRETTY_PRINT) }}</pre>
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
             </div>
         </div>
     </div>
 </div>
-
-{{-- Alpine.js for Collapsible logic (Lightweight and standard in Laravel ecosystem) --}}
-<script src="//unpkg.com/alpinejs" defer></script>
 
 @endsection
 
@@ -247,32 +340,40 @@
         if (!modal) {
             modal = document.createElement('div');
             modal.id = 'assignUserModal';
-            modal.className = 'fixed inset-0 z-50 hidden items-center justify-center';
+            modal.className = 'fixed inset-0 z-50 hidden items-center justify-center backdrop-blur-sm';
             modal.innerHTML = `
-                <div class="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" aria-hidden="true" onclick="closeAssignModal()"></div>
-                <div class="bg-white rounded-xl shadow-2xl w-full max-w-lg mx-4 z-10 overflow-hidden transform transition-all scale-100">
-                    <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                        <div>
-                            <h3 class="text-lg font-bold text-gray-900">Assign User</h3>
-                            <p class="text-xs text-gray-500">Search for a team member to take over this task.</p>
+                <div class="fixed inset-0 bg-black/50 transition-opacity" aria-hidden="true" onclick="closeAssignModal()"></div>
+                <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 z-10 overflow-hidden transform transition-all">
+                    <div class="px-6 py-5 bg-gray-800">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <div class="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="ml-4">
+                                <h3 class="text-xl font-bold text-white">Assign User</h3>
+                                <p class="text-gray-300 text-sm mt-0.5">Search for a team member to assign this task</p>
+                            </div>
                         </div>
-                         <button onclick="closeAssignModal()" class="text-gray-400 hover:text-gray-600">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                        </button>
                     </div>
                     <div class="p-6">
                         <div class="relative">
-                            <svg class="w-5 h-5 absolute left-3 top-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                            <input id="assign_user_search" type="search" class="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all text-sm" placeholder="Search by name or ID...">
+                            <svg class="w-5 h-5 absolute left-3 top-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                            <input id="assign_user_search" type="search" class="w-full pl-10 pr-4 py-3 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-gray-500 focus:border-transparent transition-all text-sm" placeholder="Search by name or student ID...">
                         </div>
-                        <div id="assignSearchResults" class="mt-3 max-h-60 overflow-y-auto hidden border border-gray-100 rounded-lg divide-y divide-gray-100 shadow-sm"></div>
+                        <div id="assignSearchResults" class="mt-3 max-h-60 overflow-y-auto hidden border-2 border-gray-200 rounded-xl divide-y divide-gray-100 shadow-sm"></div>
                     </div>
                     <form id="assignUserForm" method="POST" action="{{ route('tasks.assign', $task->id) }}">
                         @csrf
                         <input type="hidden" name="user_id" id="assign_user_id">
                     </form>
-                    <div class="bg-gray-50 px-6 py-3 flex items-center justify-end">
-                        <button type="button" onclick="closeAssignModal()" class="text-sm text-gray-600 hover:text-gray-900 font-medium px-4 py-2">Cancel</button>
+                    <div class="bg-gray-50 px-6 py-4 flex items-center justify-end space-x-3 border-t border-gray-100">
+                        <button type="button" onclick="closeAssignModal()" class="inline-flex items-center px-5 py-2.5 border-2 border-gray-300 text-sm font-semibold rounded-xl text-gray-700 bg-white hover:bg-gray-50 transition-all duration-200">Cancel</button>
                     </div>
                 </div>
             `;
@@ -312,19 +413,26 @@
         if (!items || items.length === 0) {
             wrapper.innerHTML = `
                 <div class="p-8 text-center">
-                    <p class="text-sm text-gray-500">No users found.</p>
+                    <p class="text-sm text-gray-500">No users found</p>
                 </div>`;
             wrapper.classList.remove('hidden');
             return;
         }
 
         wrapper.innerHTML = items.map(u => `
-            <button type="button" class="w-full text-left px-4 py-3 hover:bg-indigo-50 transition-colors group flex items-center justify-between" data-id="${u.id}" data-name="${u.name}">
-                <div>
-                    <div class="text-sm font-semibold text-gray-900 group-hover:text-indigo-700">${u.name}</div>
-                    <div class="text-xs text-gray-500">${u.student_id ? 'ID: ' + u.student_id : u.email}</div>
+            <button type="button" class="w-full text-left px-4 py-3 hover:bg-gray-100 transition-colors group flex items-center justify-between" data-id="${u.id}" data-name="${u.name}">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-700 font-bold text-xs mr-3">
+                        ${u.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                        <div class="text-sm font-semibold text-gray-900">${u.name}</div>
+                        <div class="text-xs text-gray-500">${u.student_id ? 'ID: ' + u.student_id : u.email}</div>
+                    </div>
                 </div>
-                <svg class="w-4 h-4 text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                <svg class="w-5 h-5 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
             </button>
         `).join('');
         wrapper.classList.remove('hidden');

@@ -55,8 +55,9 @@ class UserController extends Controller
             'role' => 'required|in:admin,advisor,allumni,member,guest',
         ]);
 
-        // Assign default password for new users
+        // Assign default password for new users and mark password as not changed
         $validated['password'] = Hash::make('password');
+        $validated['is_password_changed'] = false;
 
         User::create($validated);
 
