@@ -127,6 +127,7 @@
                     </div>
                 </li>
 
+                @if(auth()->check() && auth()->user()->role !== 'member')
                 <!-- Users -->
                 <li>
                     <a href="{{ route('users.index') }}" class="flex items-center p-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-all-300">
@@ -141,6 +142,7 @@
                         <span class="ml-3 font-medium whitespace-nowrap">Teams</span>
                     </a>
                 </li>
+                @endif
                 <!-- Tasks -->
                 <li>
                     <a href="{{ route('tasks.index') }}" class="flex items-center p-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-all-300">
@@ -148,6 +150,7 @@
                         <span class="ml-3 font-medium whitespace-nowrap">Tasks</span>
                     </a>
                 </li>
+                @if(auth()->check() && auth()->user()->role !== 'member')
                 <!-- Panels -->
                 <li>
                     <a href="{{ route('panels.index') }}" class="flex items-center p-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-all-300">
@@ -165,6 +168,9 @@
                     </a>
                 </li>
                 @endif
+                @endif
+
+                <!-- Meeting Logs: visible to all authenticated users -->
                 <li>
                     <a href="{{ route('meeting_logs.index') }}" class="flex items-center p-3 text-gray-400 hover:text-white hover:bg-gray-800 rounded-lg transition-all-300">
                         <i class="fas fa-calendar-check text-lg w-8"></i>

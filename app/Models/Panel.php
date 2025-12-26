@@ -19,4 +19,9 @@ class Panel extends Model
     {
         return $this->hasMany(Position::class);
     }
+
+    public function teams()
+    {
+        return $this->hasMany(Team::class);
+    }
 }

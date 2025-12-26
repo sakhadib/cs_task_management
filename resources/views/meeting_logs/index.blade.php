@@ -14,10 +14,12 @@
                 @endif
             </div>
             <div class="flex items-center gap-3">
-                @if(isset($currentPanel) && $currentPanel)
-                    <button onclick="openNewMeetingModal()" class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">+ New Meeting</button>
-                @else
-                    <button disabled class="inline-flex items-center px-4 py-2 bg-gray-300 text-gray-700 rounded-lg">+ New Meeting</button>
+                @if(auth()->check())
+                    @if(isset($currentPanel) && $currentPanel)
+                        <button onclick="openNewMeetingModal()" class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">+ New Meeting</button>
+                    @else
+                        <button disabled class="inline-flex items-center px-4 py-2 bg-gray-300 text-gray-700 rounded-lg">+ New Meeting</button>
+                    @endif
                 @endif
             </div>
         </div>
@@ -187,9 +189,13 @@
                                 </td>
                                 <td class="px-6 py-4 text-sm text-right">
                                     <div class="inline-flex items-center justify-end space-x-2">
-                                        <button type="button" onclick="openEditMeetingModal({{ $log->id }}, '{{ $log->type }}', '{{ addslashes($log->joining_url ?? '') }}', '{{ addslashes($log->location ?? '') }}', '{{ $log->scheduled_at }}', '{{ $log->duration ?? '' }}')" class="px-3 py-1 bg-indigo-600 text-white text-sm rounded">Edit</button>
-                                        <button type="button" onclick="openDeleteMeetingModal({{ $log->id }}, '{{ addslashes($log->joining_url ?? $log->location ?? '') }}')" class="px-3 py-1 bg-red-600 text-white text-sm rounded">Delete</button>
-                                        @if($status === 'running' || $status === 'completed')
+                                        @if(auth()->check() && auth()->user()->role !== 'member')
+                                            <button type="button" onclick="openEditMeetingModal({{ $log->id }}, '{{ $log->type }}', '{{ addslashes($log->joining_url ?? '') }}', '{{ addslashes($log->location ?? '') }}', '{{ $log->scheduled_at }}', '{{ $log->duration ?? '' }}')" class="px-3 py-1 bg-indigo-600 text-white text-sm rounded">Edit</button>
+                                        @endif
+                                        @if(auth()->check() && auth()->user()->role !== 'member')
+                                            <button type="button" onclick="openDeleteMeetingModal({{ $log->id }}, '{{ addslashes($log->joining_url ?? $log->location ?? '') }}')" class="px-3 py-1 bg-red-600 text-white text-sm rounded">Delete</button>
+                                        @endif
+                                        @if(($status === 'running' || $status === 'completed') && auth()->check() && auth()->user()->role !== 'member')
                                             <a href="{{ route('meeting_logs.attendees.index', $log->id) }}" class="px-3 py-1 bg-green-600 text-white text-sm rounded">Mark Attendee</a>
                                         @endif
                                         @if($status === 'completed')

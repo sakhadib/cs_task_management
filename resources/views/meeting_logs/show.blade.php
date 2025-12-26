@@ -29,10 +29,12 @@
                 <a href="{{ route('meeting_logs.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all">
                     Back
                 </a>
+                @if(auth()->check())
                 <button type="button" onclick="openEditMinutesModal()" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                     Edit Log
                 </button>
+                @endif
             </div>
         </div>
 
@@ -127,11 +129,13 @@
                             <div class="prose prose-indigo max-w-none text-gray-800 leading-relaxed">
                                 {!! $log->meeting_minutes !!}
                             </div>
-                        @else
+                                @else
                             <div class="h-40 flex flex-col items-center justify-center text-center">
                                 <svg class="w-12 h-12 text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                                 <p class="text-gray-400 text-sm">No minutes recorded yet.</p>
-                                <button onclick="openEditMinutesModal()" class="mt-2 text-indigo-600 hover:text-indigo-800 text-sm font-medium hover:underline">Start writing</button>
+                                @if(auth()->check())
+                                    <button onclick="openEditMinutesModal()" class="mt-2 text-indigo-600 hover:text-indigo-800 text-sm font-medium hover:underline">Start writing</button>
+                                @endif
                             </div>
                         @endif
                     </div>
