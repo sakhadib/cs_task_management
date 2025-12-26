@@ -187,7 +187,7 @@
             }
         }
         
-        // Form validation and interaction
+        // Form validation
         document.addEventListener('DOMContentLoaded', function() {
             const loginForm = document.querySelector('form');
             
@@ -202,28 +202,12 @@
                     return;
                 }
                 
-                // In a real application, this would be handled by the backend
-                console.log('Login attempt with:', {email, password});
-                
-                // Simulate API call delay
+                // Show loading state
                 const submitBtn = loginForm.querySelector('button[type="submit"]');
-                const originalText = submitBtn.innerHTML;
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Authenticating...';
                 submitBtn.disabled = true;
                 
-                // For demo purposes, re-enable after 2 seconds
-                setTimeout(() => {
-                    submitBtn.innerHTML = originalText;
-                    submitBtn.disabled = false;
-                }, 2000);
-            });
-            
-            // Demo auto-fill for testing
-            document.getElementById('email').addEventListener('focus', function() {
-                if (this.value === '') {
-                    this.value = 'demo@iutcs.org';
-                    document.getElementById('password').value = 'demo1234';
-                }
+                // Form will submit normally - backend will handle it
             });
         });
     </script>
