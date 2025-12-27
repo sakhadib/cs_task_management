@@ -230,6 +230,15 @@
         <!-- Main Content Area -->
         <div id="mainContent" class="transition-all-300 md:flex-1 md:overflow-y-auto">
             @yield('content')
+            
+            <!-- Footer -->
+            <footer class="bg-gray-900 text-gray-400 py-3 px-4 text-center text-sm border-t border-gray-800">
+                <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4">
+                    <span>&copy; {{ date('Y') }} IUTCS. All rights reserved.</span>
+                    <span class="hidden sm:inline text-gray-600">|</span>
+                    <span>Developed by <a href="https://github.com/sakhadib" target="_blank" class="text-blue-400 hover:text-blue-300 transition-colors">Adib Sakhawat</a></span>
+                </div>
+            </footer>
         </div>
     </div>
     </div>

@@ -16,8 +16,8 @@
     <div class="w-full max-w-md">
         <!-- Branding -->
         <div class="text-center mb-8">
-            <div class="inline-block bg-gray-800 rounded-2xl px-8 py-4 mb-4">
-                <h1 class="text-3xl font-bold text-white">IUTCS</h1>
+            <div class="inline-block bg-gray-800 rounded-2xl px-8 py-6 mb-4">
+                <img src="{{ asset('logo.svg') }}" alt="IUTCS" class="h-16 w-auto mx-auto">
             </div>
             <p class="text-gray-600 text-sm font-medium">Internal System</p>
         </div>
