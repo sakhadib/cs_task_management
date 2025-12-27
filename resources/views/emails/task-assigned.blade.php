@@ -39,22 +39,23 @@
         }
         
         .logo-container {
-            margin-bottom: 20px;
-        }
-        
-        .logo-image {
-            height: 60px;
-            width: auto;
-            display: inline-block;
+            margin-bottom: 24px;
         }
         
         .logo-text {
+            font-size: 32px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+        
+        .logo-subtitle {
             font-size: 13px;
             color: rgba(255, 255, 255, 0.8);
             font-weight: 500;
             letter-spacing: 0.5px;
             text-transform: uppercase;
-            margin-top: 12px;
         }
         
         .header-title {
@@ -305,8 +306,8 @@
             <!-- Header -->
             <div class="header">
                 <div class="logo-container">
-                    <img src="{{ asset('images/logo.svg') }}" alt="IUTCS" class="logo-image">
-                    <div class="logo-text">Internal System</div>
+                    <div class="logo-text">IUTCS</div>
+                    <div class="logo-subtitle">Internal System</div>
                 </div>
                 <div class="header-title">Task Assignment Notification</div>
             </div>
