@@ -55,13 +55,39 @@ class UserController extends Controller
             'role' => 'required|in:admin,advisor,allumni,member,guest',
         ]);
 
-        // Assign default password for new users and mark password as not changed
-        $validated['password'] = Hash::make('password');
+        // Generate random 6-character password
+        $generatedPassword = $this->generatePassword(6);
+        
+        // Hash password and mark as not changed
+        $validated['password'] = Hash::make($generatedPassword);
         $validated['is_password_changed'] = false;
 
-        User::create($validated);
+        $user = User::create($validated);
 
-        return redirect()->route('users.index')->with('success', 'User created successfully. Default password: "password"');
+        // Send welcome email with credentials
+        try {
+            \Mail::to($user->email)->send(new \App\Mail\WelcomeUser($user, $generatedPassword));
+        } catch (\Exception $e) {
+            \Log::error('Failed to send welcome email: ' . $e->getMessage());
+        }
+
+        return redirect()->route('users.index')->with('success', "User created successfully! Login credentials - Email: {$user->email}, Password: {$generatedPassword}");
+    }
+
+    /**
+     * Generate a random password
+     */
+    private function generatePassword($length = 6)
+    {
+        $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $password = '';
+        $charactersLength = strlen($characters);
+        
+        for ($i = 0; $i < $length; $i++) {
+            $password .= $characters[rand(0, $charactersLength - 1)];
+        }
+        
+        return $password;
     }
 
     // Show the form for editing the specified user

@@ -247,18 +247,15 @@
                                 <input type="email" id="create_email" name="email" required class="block w-full px-4 py-3 border-2 border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-800 transition-all" placeholder="john@example.com">
                             </div>
 
-                            <div>
-                                <label for="create_password" class="block text-sm font-semibold text-gray-700 mb-2">
-                                    Password <span class="text-red-500">*</span>
-                                </label>
-                                <input type="password" id="create_password" name="password" required class="block w-full px-4 py-3 border-2 border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-800 transition-all" placeholder="••••••••">
-                            </div>
-
-                            <div>
-                                <label for="create_password_confirmation" class="block text-sm font-semibold text-gray-700 mb-2">
-                                    Confirm Password <span class="text-red-500">*</span>
-                                </label>
-                                <input type="password" id="create_password_confirmation" name="password_confirmation" required class="block w-full px-4 py-3 border-2 border-gray-300 rounded-xl shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:border-gray-800 transition-all" placeholder="••••••••">
+                            <div class="px-4 py-3 bg-gray-100 rounded-xl border-2 border-gray-300">
+                                <div class="flex items-start">
+                                    <svg class="w-5 h-5 text-gray-600 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <p class="text-sm text-gray-700">
+                                        A random 6-character password will be automatically generated and sent to the user's email address.
+                                    </p>
+                                </div>
                             </div>
 
                             <div>
